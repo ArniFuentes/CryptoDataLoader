@@ -20,7 +20,7 @@ const extractData = () => {
   }
 };
 
-const transformToArray = (data) => {
+const transformData = (data) => {
   return data.map((object) => [
     object.id,
     object.name,
@@ -33,4 +33,15 @@ const transformToArray = (data) => {
     new Date().toISOString()
   ]
   );
+};
+
+const loadData = (transformedData) => {
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = book.getSheetByName("Hoja 1");
+  const range = sheet.getDataRange();
+  const lastRow = range.getLastRow(); 
+  const numberOfRowsToAdd = transformedData.length; 
+  const rangeLimits = `A${lastRow + 1}:I${lastRow + numberOfRowsToAdd}`;
+  const rangeToAddNewData = sheet.getRange(rangeLimits);
+  rangeToAddNewData.setValues(transformedData)
 };
