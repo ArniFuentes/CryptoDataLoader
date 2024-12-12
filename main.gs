@@ -3,4 +3,3 @@ const main = () => {
   const transformedData = transformData(data);
   loadData(transformedData);
 };
-
