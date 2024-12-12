@@ -5,6 +5,10 @@ const extractData = () => {
     "X-CMC_PRO_API_KEY": API_KEY,
   };
 
+  parameters = {
+    'convert': 'USD'
+  };
+
   const options = {
     method: "GET",
     headers: headers,
@@ -13,7 +17,6 @@ const extractData = () => {
   try {
     const response = UrlFetchApp.fetch(url, options);
     const data = JSON.parse(response.getContentText());
-
     return data.data;
   } catch (error) {
     console.error("Error al hacer la solicitud:", error);
@@ -21,27 +24,37 @@ const extractData = () => {
 };
 
 const transformData = (data) => {
-  return data.map((object) => [
-    object.id,
-    object.name,
-    object.symbol,
-    object.slug,
-    object.num_market_pairs,
-    object.circulating_supply,
-    object.cmc_rank,
-    object.quote.USD.price,
-    new Date().toISOString()
-  ]
-  );
+  try {
+    return data.map((object) => [
+      object.id,
+      object.name,
+      object.symbol,
+      object.slug,
+      object.num_market_pairs,
+      Math.round(object.circulating_supply),
+      object.cmc_rank,
+      Math.round(object.quote.USD.price),
+      new Date().toISOString()
+    ]
+    );
+  } catch {
+    console.error("Error al hacer la transformación:", error);
+  }
 };
 
 const loadData = (transformedData) => {
-  const book = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = book.getSheetByName("Hoja 1");
-  const range = sheet.getDataRange();
-  const lastRow = range.getLastRow(); 
-  const numberOfRowsToAdd = transformedData.length; 
-  const rangeLimits = `A${lastRow + 1}:I${lastRow + numberOfRowsToAdd}`;
-  const rangeToAddNewData = sheet.getRange(rangeLimits);
-  rangeToAddNewData.setValues(transformedData)
+  try {
+    const book = SpreadsheetApp.getActiveSpreadsheet();
+    const sheetName = "Hoja 1";
+    const sheet = book.getSheetByName(sheetName);
+    if (!sheet) throw new Error(`La hoja '${sheetName}' no existe.`);
+    const range = sheet.getDataRange();
+    const lastRow = range.getLastRow();
+    const numberOfRowsToAdd = transformedData.length;
+    const rangeLimits = `A${lastRow + 1}:I${lastRow + numberOfRowsToAdd}`;
+    const rangeToAddNewData = sheet.getRange(rangeLimits);
+    rangeToAddNewData.setValues(transformedData)
+  } catch (error) {
+    console.error("Error al cargar datos en la hoja:", error);
+  }
 };
