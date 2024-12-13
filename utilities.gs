@@ -2,14 +2,14 @@ const extractData = () => {
   try {
     const url =
       "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
-    const apikey = getApiKey();
-    const headers = { Accept: "application/json", "X-CMC_PRO_API_KEY": apikey };
+    const apiKey = getApiKey();
+    const headers = { Accept: "application/json", "X-CMC_PRO_API_KEY": apiKey };
     const options = { method: "GET", headers: headers };
     const response = UrlFetchApp.fetch(url, options);
     const data = JSON.parse(response.getContentText());
     return data.data;
   } catch (error) {
-    console.error("Error al hacer la solicitud:", error);
+    throw new Error(`extractData - ${error.message}`);
   }
 };
 
@@ -27,7 +27,7 @@ const transformData = (data) => {
       new Date().toISOString(),
     ]);
   } catch (error) {
-    console.error("Error al hacer la transformación:", error);
+    throw new Error(`transformData - ${error.message}`);
   }
 };
 
@@ -46,7 +46,7 @@ const loadData = (transformedData) => {
     const rangeToAddNewData = sheet.getRange(rangeLimits);
     rangeToAddNewData.setValues(transformedData);
   } catch (error) {
-    console.error("Error al cargar datos en la hoja:", error);
+    throw new Error(`loadData - ${error.message}`);
   }
 };
 
@@ -54,7 +54,7 @@ const getApiKey = () => {
   const apiKey = PropertiesService.getScriptProperties().getProperty("API_KEY");
   if (!apiKey) {
     throw new Error(
-      "Clave de la API no establecida en la configuración del proyecto."
+      "La clave de la API no está configurada. Por favor, asegúrate de establecerla en la configuración del proyecto."
     );
   }
   return apiKey;
