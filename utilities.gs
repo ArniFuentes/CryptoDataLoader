@@ -7,16 +7,18 @@ const extractData = () => {
     const options = { method: "GET", headers: headers };
     const response = UrlFetchApp.fetch(url, options);
     const data = JSON.parse(response.getContentText());
-    return data.data;
+    return data;
   } catch (error) {
     throw new Error(`extractData - ${error.message}`);
   }
 };
 
+
 const transformData = (data) => {
   try {
-    return data.map((object) => [
-      object.id,
+    const listObjects = data.data;
+    const listOfLists = listObjects.map((object) => [
+      // object.id,
       object.name,
       object.symbol,
       object.slug,
@@ -24,14 +26,40 @@ const transformData = (data) => {
       Math.round(object.circulating_supply),
       object.cmc_rank,
       Math.round(object.quote.USD.price),
-      new Date().toISOString(),
+      data.status.timestamp
     ]);
+    return listOfLists;
   } catch (error) {
     throw new Error(`transformData - ${error.message}`);
   }
 };
 
-const loadData = (transformedData) => {
+
+const writeHeaders = () => {
+  try {
+    const headers = [
+      [
+        "Name",
+        "Symbol",
+        "Slug",
+        "Market Pairs",
+        "Circulating Supply",
+        "CMC Rank",
+        "Price",
+        "Timestamp"
+      ]
+    ];
+    const sheet = setSheet();
+    const rangeLimits = "A1:H1";
+    const headerRange = sheet.getRange(rangeLimits);
+    headerRange.setValues(headers);
+  } catch (error) {
+    throw new Error(`writeHeaders - ${error.message}`);
+  }
+}
+
+
+const setSheet = () => {
   try {
     const book = SpreadsheetApp.getActiveSpreadsheet();
     const sheetName = "Hoja 1";
@@ -39,16 +67,24 @@ const loadData = (transformedData) => {
     if (!sheet) {
       throw new Error(`La hoja '${sheetName}' no existe.`);
     }
-    const range = sheet.getDataRange();
-    const lastRow = range.getLastRow();
-    const numberOfRowsToAdd = transformedData.length;
-    const rangeLimits = `A${lastRow + 1}:I${lastRow + numberOfRowsToAdd}`;
+    return sheet;
+  } catch (error) {
+    throw new Error(`setSheet - ${error.message}`);
+  }
+}
+
+
+const loadData = (transformedData) => {
+  try {
+    const sheet = setSheet();
+    const rangeLimits = "A2:H101";
     const rangeToAddNewData = sheet.getRange(rangeLimits);
     rangeToAddNewData.setValues(transformedData);
   } catch (error) {
     throw new Error(`loadData - ${error.message}`);
   }
 };
+
 
 const getApiKey = () => {
   const apiKey = PropertiesService.getScriptProperties().getProperty("API_KEY");

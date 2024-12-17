@@ -1,6 +1,7 @@
 const main = () => {
   try {
     console.log("Inicio del flujo principal.");
+    writeHeaders();
     const data = extractData();
     console.log("Datos extraídos correctamente.");
     const transformedData = transformData(data);
