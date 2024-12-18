@@ -2,10 +2,12 @@ const extractData = () => {
   try {
     const url =
       "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+    const params = '?start=1&limit=50&convert=USD';
+    const urlPlusParams = url + params;
     const apiKey = getApiKey();
     const headers = { Accept: "application/json", "X-CMC_PRO_API_KEY": apiKey };
     const options = { method: "GET", headers: headers };
-    const response = UrlFetchApp.fetch(url, options);
+    const response = UrlFetchApp.fetch(urlPlusParams, options);
     const data = JSON.parse(response.getContentText());
     return data;
   } catch (error) {
@@ -77,7 +79,7 @@ const setSheet = () => {
 const loadData = (transformedData) => {
   try {
     const sheet = setSheet();
-    const rangeLimits = "A2:H101";
+    const rangeLimits = "A2:H51";
     const rangeToAddNewData = sheet.getRange(rangeLimits);
     rangeToAddNewData.setValues(transformedData);
   } catch (error) {
