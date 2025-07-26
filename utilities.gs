@@ -1,34 +1,30 @@
-const fetchData = (url, params, headers) => {
-  try {
-    const urlPlusParams = url + params;
-    const options = { method: "GET", headers };
-    const response = UrlFetchApp.fetch(urlPlusParams, options);
-    const data = JSON.parse(response.getContentText());
-    return data
-  } catch (error) {
-    throw new Error(`fetchData - ${error.message}`);
+const fetchData = (api_url, headers) => {
+  if (!api_url || !headers) {
+    throw new Error("Error en la función fetchData - Argumento/s inválidos");
   }
+  const options = { method: "GET", headers };
+  const response = UrlFetchApp.fetch(api_url, options);
+  const data = JSON.parse(response.getContentText());
+  return data
 };
 
 const writeHeaders = (sheet, range, headers) => {
-  try {
-    sheet.getRange(range).setValues(headers);
-  } catch (error) {
-    throw new Error(`writeHeaders - ${error.message}`);
+  if (!sheet || !range || !headers) {
+    throw new Error("Error en la función writeHeaders - Argumento/s inválidos");
   }
+  sheet.getRange(range).setValues(headers);
 };
 
-const writeData = (sheet, range, data) => {
-  try {
-    sheet.getRange(range).setValues(data);
-  } catch {
-    throw new Error(`writeData - ${error.message}`);
+const writeData = (range, data) => {
+  if (!range || !data) {
+    throw new Error("Error en la función writeData - Argumento/s inválidos");
   }
+  range.setValues(data);
 };
 
 const transformData = (data) => {
-  if (!data || !Array.isArray(data.data)) {
-    throw new Error("Error en transformData - Datos inválidos");
+  if (!data || !data.data || !Array.isArray(data.data)) {
+    throw new Error("Error en transformData - Argumento/s inválidos");
   }
   const listObjects = data.data;
   return listObjects.map((object) => [
