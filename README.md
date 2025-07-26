@@ -1,2 +1,2 @@
 # CryptoDataLoader
-Código para extraer, transformar y cargar datos de criptomonedas desde la API de CoinMarketCap a Google Sheets utilizando Google Apps Script.
+Code to extract, transform, and load cryptocurrency data from the CoinMarketCap API to Google Sheets using Google Apps Script.
