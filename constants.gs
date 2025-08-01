@@ -1,4 +1,4 @@
-const sheetName = "data-api";
+const sheetName = "api_data";
 
 const apiUrl = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 

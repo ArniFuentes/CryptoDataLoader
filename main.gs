@@ -1,5 +1,5 @@
 const main = () => {
-  console.log("Iniciar ejecución");
+  console.log("Start execution");
 
   try {
     const data = extractData(apiUrl, options);
@@ -8,8 +8,8 @@ const main = () => {
 
     writeToSheet(transformedData, sheetId, sheetName, headersTable);
   } catch (error) {
-    console.error("Error durante la ejecución:", error);
+    console.log("Error during execution:", error.message);
   }
 
-  console.log("Ejecución finalizada");
+  console.log("Execution completed");
 };

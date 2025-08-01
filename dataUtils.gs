@@ -1,6 +1,6 @@
 const extractData = (apiUrl, options) => {
   if (!apiUrl || !options) {
-    throw new Error("Error en extractData - Argumento/s inválidos");
+    throw new Error("Error in extractData - Invalid argument(s)");
   }
   const response = UrlFetchApp.fetch(apiUrl, options);
   const data = JSON.parse(response.getContentText());
@@ -10,7 +10,7 @@ const extractData = (apiUrl, options) => {
 
 const transformData = (data) => {
   if (!data || !data.data || !Array.isArray(data.data)) {
-    throw new Error("Error en transformData - Argumento/s inválidos");
+    throw new Error("Error in transformData - Invalid argument(s)");
   }
   const listObjects = data.data;
   return listObjects.map((object) => [

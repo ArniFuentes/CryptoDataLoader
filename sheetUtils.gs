@@ -1,7 +1,8 @@
 const writeToSheet = (transformedData, sheetId, sheetName, headersTable) => {
   if (!transformedData || !sheetId || !sheetName || !headersTable) {
-    throw new Error("Error en writeToSheet - Argumento/s inválidos");
+    throw new Error("Error in writeToSheet - Invalid argument(s)");
   }
+
   const sheet = getSheet(sheetId, sheetName);
   const numRows = transformedData.length;
   const numCols = transformedData[0].length;
@@ -16,10 +17,12 @@ const writeToSheet = (transformedData, sheetId, sheetName, headersTable) => {
 
 const getSheet = (sheetId, sheetName) => {
   if (!sheetId || !sheetName) {
-    throw new Error("Error en getSheet - Argumento/s inválidos");
+    throw new Error("Error in getSheet - Invalid argument(s)");
   }
   const book = SpreadsheetApp.openById(sheetId);
   const sheet = book.getSheetByName(sheetName);
-  if (!sheet) throw new Error(`Hoja '${sheetName}' no encontrada.`);
+
+  if (!sheet) throw new Error(`Sheet '${sheetName}' not found.`);
+
   return sheet;
 };
