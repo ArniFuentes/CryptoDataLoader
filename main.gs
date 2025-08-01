@@ -7,9 +7,9 @@ const main = () => {
     const transformedData = transformData(data);
 
     writeToSheet(transformedData, sheetId, sheetName, tableHeaders);
+
+    console.log("Execution completed");
   } catch (error) {
     console.log("Error during execution:", error.message);
   }
-
-  console.log("Execution completed");
 };
