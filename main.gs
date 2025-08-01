@@ -6,7 +6,7 @@ const main = () => {
 
     const transformedData = transformData(data);
 
-    writeToSheet(transformedData, sheetId, sheetName, headersTable);
+    writeToSheet(transformedData, sheetId, sheetName, tableHeaders);
   } catch (error) {
     console.log("Error during execution:", error.message);
   }

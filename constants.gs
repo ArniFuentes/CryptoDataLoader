@@ -13,7 +13,7 @@ const headers = {
 
 const options = { method: "GET", headers };
 
-const headersTable = [
+const tableHeaders = [
   [
     "Name",
     "Symbol",
