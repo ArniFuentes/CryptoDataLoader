@@ -10,6 +10,6 @@ const main = () => {
 
     console.log("Execution completed");
   } catch (error) {
-    console.log("Error during execution:", error.message);
+    throw error;
   }
 };

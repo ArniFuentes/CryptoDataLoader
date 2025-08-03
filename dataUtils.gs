@@ -1,26 +1,49 @@
 const extractData = (apiUrl, options) => {
   if (!apiUrl || !options) {
-    throw new Error("Error in extractData - Invalid argument(s)");
+    throw new Error(
+      `extractData error: missing argument(s). apiUrl: ${apiUrl} options: ${JSON.stringify(
+        options
+      )}`
+    );
   }
-  const response = UrlFetchApp.fetch(apiUrl, options);
-  const data = JSON.parse(response.getContentText());
-  return data
+
+  try {
+    const response = UrlFetchApp.fetch(apiUrl, options);
+    const content = response.getContentText();
+    const data = JSON.parse(content);
+    return data;
+  } catch (error) {
+    throw new Error(
+      `extractData error: Failed to fetch or parse response. Error: ${error.message}`
+    );
+  }
 };
 
 
 const transformData = (data) => {
-  if (!data || !data.data || !Array.isArray(data.data)) {
-    throw new Error("Error in transformData - Invalid argument(s)");
+  if (!data) throw new Error("Error in transformData - missing argument");
+
+  if (!Array.isArray(data.data)) {
+    throw new Error("Error in transformData - data.data must be an array");
   }
-  const listObjects = data.data;
-  return listObjects.map((object) => [
-    object.name,
-    object.symbol,
-    object.slug,
-    object.num_market_pairs,
-    Math.round(object.circulating_supply),
-    object.cmc_rank,
-    Math.round(object.quote.USD.price),
-    data.status.timestamp
+
+  if (data.data.length === 0) {
+    throw new Error("Error in transformData - data.data must be a non-empty array");
+  }
+
+  const records = data.data;
+
+  const recordsReady = records.map((record) => [
+    record.name,
+    record.symbol,
+    record.slug,
+    record.num_market_pairs,
+    record.circulating_supply,
+    record.cmc_rank,
+    record.quote?.USD?.price,
+    data.status?.timestampp,
   ]);
+
+  return recordsReady;
 };
+
