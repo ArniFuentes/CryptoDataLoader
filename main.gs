@@ -1,15 +1,11 @@
-const main = () => {
-  console.log("Start execution");
-
+function main() {
   try {
     const data = extractData(apiUrl, options);
 
-    const transformedData = transformData(data);
-
-    writeToSheet(transformedData, sheetId, sheetName, tableHeaders);
-
-    console.log("Execution completed");
+    const transformedDataForBigQuery = transformDataForBigQuery(data);
+    
+    insertToBigQuery(projectId, datasetId, tableId, transformedDataForBigQuery);
   } catch (error) {
     throw error;
   }
-};
+}

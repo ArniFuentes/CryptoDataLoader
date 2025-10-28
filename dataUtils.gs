@@ -1,11 +1,5 @@
 const extractData = (apiUrl, options) => {
-  if (!apiUrl || !options) {
-    throw new Error(
-      `extractData error: missing argument(s). apiUrl: ${apiUrl} options: ${JSON.stringify(
-        options
-      )}`
-    );
-  }
+  if (!apiUrl || !options) throw new Error("Error in extractData function: missing argument(s)");
 
   try {
     const response = UrlFetchApp.fetch(apiUrl, options);
@@ -13,37 +7,36 @@ const extractData = (apiUrl, options) => {
     const data = JSON.parse(content);
     return data;
   } catch (error) {
-    throw new Error(
-      `extractData error: Failed to fetch or parse response. Error: ${error.message}`
-    );
+    error.message = `Error in extractData function: ${error.message}`;
+    throw error;
   }
 };
 
 
-const transformData = (data) => {
-  if (!data) throw new Error("Error in transformData - missing argument");
+const transformDataForBigQuery = (data) => {
+  if (!data) throw new Error("Error in transformDataForBigQuery - missing argument");
 
-  if (!Array.isArray(data.data)) {
-    throw new Error("Error in transformData - data.data must be an array");
+  if (!Array.isArray(data.data)) throw new Error("Error in transformDataForBigQuery - data.data must be an array");
+
+  if (data.data.length === 0) throw new Error("Error in transformDataForBigQuery - data.data must be a non-empty array");
+
+  try {
+    const records = data.data;
+
+    const recordsReady = records.map((record) => ({
+      name: record.name,
+      symbol: record.symbol,
+      slug: record.slug,
+      num_market_pairs: record.num_market_pairs,
+      circulating_supply: record.circulating_supply,
+      cmc_rank: record.cmc_rank,
+      price: record.quote.USD.price,
+      timestamp: data.status.timestamp,
+    }));
+
+    return recordsReady;
+  } catch (error) {
+    error.message = `Error in transformDataForBigQuery function: ${error.message}`;
+    throw error;
   }
-
-  if (data.data.length === 0) {
-    throw new Error("Error in transformData - data.data must be a non-empty array");
-  }
-
-  const records = data.data;
-
-  const recordsReady = records.map((record) => [
-    record.name,
-    record.symbol,
-    record.slug,
-    record.num_market_pairs,
-    record.circulating_supply,
-    record.cmc_rank,
-    record.quote?.USD?.price,
-    data.status?.timestampp,
-  ]);
-
-  return recordsReady;
 };
-
