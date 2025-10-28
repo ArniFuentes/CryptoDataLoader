@@ -6,9 +6,6 @@ const projectId = PropertiesService.getScriptProperties().getProperty("projectId
 const datasetId = PropertiesService.getScriptProperties().getProperty("datasetId");
 const tableId = PropertiesService.getScriptProperties().getProperty("tableId");
 
-
-// const sheetId = PropertiesService.getScriptProperties().getProperty("spreadsheetId");
-
 const headers = {
   Accept: "application/json",
   "X-CMC_PRO_API_KEY": apiKey,
