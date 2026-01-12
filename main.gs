@@ -13,6 +13,7 @@ function main() {
 
   } catch (error) {
     MailApp.sendEmail({ to: email, subject: "Error in the script", body: error.message });
+    
     throw error;
   }
 }
