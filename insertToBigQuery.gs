@@ -17,6 +17,4 @@ function insertToBigQuery(projectId, datasetId, tableId, results) {
       `Error in insertToBigQuery function: ${JSON.stringify(response.insertErrors, null, 2)}`
     );
   }
-
-  console.log(`Inserted ${results.length} rows to BigQuery`);
 }

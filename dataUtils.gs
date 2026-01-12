@@ -6,12 +6,12 @@ const extractData = (apiUrl, options) => {
     const content = response.getContentText();
     const data = JSON.parse(content);
     return data;
+    
   } catch (error) {
     error.message = `Error in extractData function: ${error.message}`;
     throw error;
   }
 };
-
 
 const transformDataForBigQuery = (data) => {
   if (!data) throw new Error("Error in transformDataForBigQuery - missing argument");
@@ -35,6 +35,7 @@ const transformDataForBigQuery = (data) => {
     }));
 
     return recordsReady;
+
   } catch (error) {
     error.message = `Error in transformDataForBigQuery function: ${error.message}`;
     throw error;

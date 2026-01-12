@@ -1,11 +1,18 @@
 function main() {
   try {
-    const data = extractData(apiUrl, options);
+    console.log('Starting...');
 
-    const transformedDataForBigQuery = transformDataForBigQuery(data);
-    
-    insertToBigQuery(projectId, datasetId, tableId, transformedDataForBigQuery);
+    const data = retry(() => extractData(apiUrl, options));
+    console.log(`Extracted ${data.data.length} records from API`);
+
+    const transformedData = transformDataForBigQuery(data);
+    console.log(`Transformed ${transformedData.length} records`);
+
+    retry(() => insertToBigQuery(projectId, datasetId, tableId, transformedData));
+    console.log(`Inserted ${transformedData.length} rows to BigQuery`);
+
   } catch (error) {
+    MailApp.sendEmail({ to: email, subject: "Error in the script", body: error.message });
     throw error;
   }
 }
