@@ -2,6 +2,8 @@ function main() {
   try {
     console.log('Starting...');
 
+    validateConfig(properties);
+
     const data = retry(() => extractData(apiUrl, options));
     console.log(`Extracted ${data.data.length} records from API`);
 
