@@ -3,6 +3,10 @@ const extractData = (apiUrl, options) => {
 
   try {
     const response = UrlFetchApp.fetch(apiUrl, options);
+    const statusCode = response.getResponseCode();
+
+    if (statusCode !== 200) throw new Error(`API returned HTTP ${statusCode}`);
+
     const content = response.getContentText();
     const data = JSON.parse(content);
     return data;
@@ -13,12 +17,18 @@ const extractData = (apiUrl, options) => {
   }
 };
 
+const validateDataStructure = (data) => {
+  if (!data) throw new Error("Error in validateDataStructure - missing argument");
+
+  if (!data.data || !Array.isArray(data.data)) throw new Error("Error in validateDataStructure - Invalid API response structure");
+
+  if (data.data.length === 0) throw new Error("Error in validateDataStructure - data.data must be a non-empty array");
+
+  return data;
+}
+
 const transformDataForBigQuery = (data) => {
   if (!data) throw new Error("Error in transformDataForBigQuery - missing argument");
-
-  if (!Array.isArray(data.data)) throw new Error("Error in transformDataForBigQuery - data.data must be an array");
-
-  if (data.data.length === 0) throw new Error("Error in transformDataForBigQuery - data.data must be a non-empty array");
 
   try {
     const records = data.data;

@@ -7,7 +7,9 @@ function main() {
     const data = retry(() => extractData(apiUrl, options));
     console.log(`Extracted ${data.data.length} records from API`);
 
-    const transformedData = transformDataForBigQuery(data);
+    const validatedData = validateDataStructure(data);
+
+    const transformedData = transformDataForBigQuery(validatedData);
     console.log(`Transformed ${transformedData.length} records`);
 
     retry(() => insertToBigQuery(projectId, datasetId, tableId, transformedData));
